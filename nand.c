@@ -65,7 +65,7 @@ static void nand_send_command(volatile int command)
 	nand_digital_write(NAND_CLE, 0);
 }
 
-static void nand_send_address(volatile int address)
+static void nand_send_address_1_cycle(volatile int address)
 {
 	nand_write_pin_mode();
 	nand_digital_write(NAME_ALE, 1);
@@ -151,7 +151,7 @@ static void nand_read_id(unsigned int cycles[5])
 {
 	int i;
 	nand_send_command(0x90);
-	nand_send_address(0x00);
+	nand_send_address_1_cycle(0x00);
 	for (i = 0; i < 5; i++) {
 		cycles[i] = nand_read();
 	}
