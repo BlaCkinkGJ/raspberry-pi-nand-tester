@@ -20,6 +20,20 @@ void nand_pins_print()
 	printf("NAND_WP=%d \n", digitalRead(NAND_WP));
 }
 
+void nand_page_print(char *data)
+{
+	for (int i = 0; i < NAND_PAGE_BYTE; i++) {
+		if (i % 32 == 0) {
+			printf("\n");
+		}
+		if (i % 1024 == 0) {
+			printf("\n");
+		}
+		printf("%02x ", data[i]);
+	}
+	printf("\n");
+}
+
 static void nand_delay_ns(int ns)
 {
 	struct timespec req, rem;
@@ -75,6 +89,11 @@ static void nand_send_address_1_cycle(volatile int address)
 	nand_digital_write(NAME_ALE, 0);
 }
 
+static void nand_enable_chip()
+{
+	nand_digital_write(NAND_CE, 0);
+}
+
 static unsigned int nand_lookup[16] = {
 	0x0, 0x8, 0x4, 0xc, 0x2, 0xa, 0x6, 0xe,
 	0x1, 0x9, 0x5, 0xd, 0x3, 0xb, 0x7, 0xf,
@@ -91,7 +110,7 @@ static unsigned int nand_read_byte()
 	return nand_byte_reverse(digitalReadByte());
 }
 
-static unsigned int nand_read()
+static unsigned int nand_read_1_cycle()
 {
 	unsigned int result = 0x00;
 	nand_read_pin_mode();
@@ -101,13 +120,16 @@ static unsigned int nand_read()
 	return result;
 }
 
-static void nand_enable_chip()
-{
-	nand_digital_write(NAND_CE, 0);
-}
-
 static void nand_wait_busy()
 {
+#ifdef NAND_READ_STATUS_WAIT_ENABLE
+	unsigned int status;
+	do {
+		nand_send_command(0x70);
+		nand_delay_ns(65);
+		status = nand_read_1_cycle();
+	} while (0 == ((status << 6) & 0x1));
+#endif
 	while (0 == digitalRead(NAND_R_B))
 		;
 }
@@ -140,11 +162,122 @@ int nand_init()
 		nand_digital_write(i, 0);
 	}
 
-	// reset the chip
 	nand_enable_chip();
+#ifdef NAND_ENABLE_RESET
+	// reset the chip
 	nand_send_command(0xff);
 	nand_wait_busy();
+#endif
 	return 0;
+}
+
+static void nand_send_address(volatile int row, volatile int col)
+{
+	int i;
+	int addrs[4] = { col & 0xff, (col >> 8) & 0xff, row & 0xff,
+			 (row >> 8) & 0xff };
+	nand_write_pin_mode();
+	nand_digital_write(NAME_ALE, 1);
+	for (i = 0; i < 4; i++) {
+		nand_digital_write_byte(addrs[i]);
+		nand_digital_write(NAND_WE, 0);
+		nand_digital_write(NAND_WE, 1);
+	}
+	nand_digital_write(NAME_ALE, 0);
+}
+
+static void nand_send_address_row(volatile int row)
+{
+	int i;
+	int addrs[2] = { row & 0xff, (row >> 8) & 0xff };
+	nand_write_pin_mode();
+	nand_digital_write(NAME_ALE, 1);
+	for (i = 0; i < 2; i++) {
+		nand_digital_write_byte(addrs[i]);
+		nand_digital_write(NAND_WE, 0);
+		nand_digital_write(NAND_WE, 1);
+	}
+	nand_digital_write(NAME_ALE, 0);
+}
+
+void nand_status()
+{
+	unsigned int status;
+	nand_send_command(0x70);
+	nand_delay_ns(65);
+	status = nand_read_1_cycle();
+	printf("==================== I/O STATUS ===================\n");
+	printf("%-45s: %s\n", "Pass/Fail", (status & 0x1) ? "Fail" : "Success");
+	printf("%-45s: %s(R_B:%d)\n", "Ready/Busy",
+	       ((status << 6) & 0x1) ? "Ready" : "Busy", digitalRead(NAND_R_B));
+	printf("%-45s: %s\n", "WriteProtected",
+	       ((status << 7) & 0x1) ? "Protected" : "Not Protected");
+	printf("===================================================\n");
+}
+
+int nand_pass_fail()
+{
+	unsigned int status;
+	nand_send_command(0x70);
+	nand_delay_ns(65);
+	status = nand_read_1_cycle();
+	return (status & 0x1);
+}
+
+int nand_read(char *data, int block, int page)
+{
+	int i = 0;
+	int row, col;
+	if (data == NULL) {
+		return -1;
+	}
+	nand_send_command(0x00);
+	row = (block * NAND_PAGES_PER_BLOCK) + page;
+	col = 0x00;
+	nand_send_address(row, col);
+	nand_send_command(0x30);
+	nand_wait_busy();
+	for (i = 0; i < NAND_PAGE_BYTE; i++) {
+		data[i] = (char)nand_read_1_cycle();
+	}
+	return 0;
+}
+
+void nand_write_1_cycle(int data)
+{
+	nand_write_pin_mode();
+	nand_digital_write_byte(data);
+	nand_digital_write(NAND_WE, 0);
+	nand_digital_write(NAND_WE, 1);
+}
+
+int nand_write(char *data, int block, int page)
+{
+	int i = 0;
+	int row, col = 0;
+	if (data == NULL) {
+		return -1;
+	}
+	nand_send_command(0x80);
+	row = (block * NAND_PAGES_PER_BLOCK) + page;
+	col = 0x00;
+	nand_send_address(row, col);
+	nand_delay_ns(105);
+	for (i = 0; i < NAND_PAGE_BYTE; i++) {
+		nand_write_1_cycle(data[i]);
+	}
+	nand_send_command(0x10);
+	nand_wait_busy();
+	return nand_pass_fail();
+}
+
+int nand_erase(int block)
+{
+	nand_send_command(0x60);
+	nand_send_address_row(block * NAND_PAGES_PER_BLOCK);
+	nand_send_command(0xD0);
+	nand_wait_busy();
+	return nand_pass_fail();
 }
 
 static void nand_read_id(unsigned int cycles[5])
@@ -153,7 +286,7 @@ static void nand_read_id(unsigned int cycles[5])
 	nand_send_command(0x90);
 	nand_send_address_1_cycle(0x00);
 	for (i = 0; i < 5; i++) {
-		cycles[i] = nand_read();
+		cycles[i] = nand_read_1_cycle();
 	}
 }
 
