@@ -7,3 +7,9 @@
  
  - WiringPi GPIO 0 ~ 8 for I/O Pins (0(NAND) to 0(Pi), 8 to 8)
  - WiringPi GPIO 21 ~ 27 for Command Pins(CE, RE, ALE ...)
+
+This program executes the memory sanitizer. Therefore, you must install `libasan6`.
+
+```bash
+sudo apt install -y libasan6
+```
