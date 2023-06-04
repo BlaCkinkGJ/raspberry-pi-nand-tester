@@ -23,10 +23,10 @@ void nand_pins_print()
 void nand_page_print(char *data)
 {
 	for (int i = 0; i < NAND_PAGE_BYTE; i++) {
-		if (i % 32 == 0) {
+		if (!(i % (1 << 8))) {
 			printf("\n");
 		}
-		if (i % 1024 == 0) {
+		if (!(i % ((1 << 10)))) {
 			printf("\n");
 		}
 		printf("%02x ", data[i]);
@@ -243,7 +243,7 @@ int nand_read(char *data, int block, int page)
 	return 0;
 }
 
-void nand_write_1_cycle(int data)
+void nand_write_1_cycle(volatile int data)
 {
 	nand_write_pin_mode();
 	nand_digital_write_byte(data);
@@ -254,7 +254,7 @@ void nand_write_1_cycle(int data)
 int nand_write(char *data, int block, int page)
 {
 	int i = 0;
-	int row, col = 0;
+	int row, col;
 	if (data == NULL) {
 		return -1;
 	}
@@ -264,7 +264,7 @@ int nand_write(char *data, int block, int page)
 	nand_send_address(row, col);
 	nand_delay_ns(105);
 	for (i = 0; i < NAND_PAGE_BYTE; i++) {
-		nand_write_1_cycle(data[i]);
+		nand_write_1_cycle((int)data[i]);
 	}
 	nand_send_command(0x10);
 	nand_wait_busy();
@@ -290,7 +290,7 @@ static void nand_read_id(unsigned int cycles[5])
 	}
 }
 
-void nand_info_print(void)
+int nand_info_print(void)
 {
 	const char *serial_access_minimums[] = { "50ns/30ns", "25ns",
 						 "reserved", "reserved" };
@@ -302,7 +302,7 @@ void nand_info_print(void)
 	if (cycles[0] != 0xec) {
 		printf("fail to read the marker (expect: 0xec, actual:0x%x)\n",
 		       cycles[0]);
-		return;
+		return -1;
 	}
 	printf("==================== NAND INFO ====================\n");
 	// 2st cycle
@@ -336,6 +336,7 @@ void nand_info_print(void)
 	       1 << (6 + ((cycles[4] >> 4) & 0x7)));
 	printf("%-45s: %s\n", "process", processes[cycles[4] & 0x3]);
 	printf("===================================================\n");
+	return 0;
 }
 
 static void nand_disable_chip()

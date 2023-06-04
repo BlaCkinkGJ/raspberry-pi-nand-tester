@@ -24,7 +24,7 @@ void nand_free();
 void nand_status();
 
 void nand_pins_print();
-void nand_info_print();
+int nand_info_print();
 void nand_page_print(char *data);
 
 #endif

@@ -56,14 +56,13 @@ int main(void)
 	int ret;
 	ret = nand_init();
 	if (ret) {
-		return ret;
+		goto out;
 	}
-	nand_info_print();
-	ret = erase_write_test(0, 0);
+	ret = nand_info_print();
 	if (ret) {
 		goto out;
 	}
-	ret = erase_write_test(1, 1);
+	ret = erase_write_test(0, 0);
 	if (ret) {
 		goto out;
 	}
