@@ -14,7 +14,10 @@ CFLAGS = -Wall \
          -Wconversion \
          -Werror \
          -O3
-LIBS = -lwiringPi
+LIBS = -lwiringPi \
+       -lasan \
+       -fsanitize=address \
+       -static-libasan
 INCLUDES = 
 SRCS = nand.c main.c
 TARGET = a.out
@@ -25,6 +28,9 @@ all: $(TARGET)
 $(TARGET): $(SRCS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS)
 
+check:
+	cppcheck *.[ch]
+
 clean:
 	rm -rf $(SRCS)
-	rm -rf $(OBJS)
+	rm -rf $(TARGET)
