@@ -19,7 +19,7 @@ LIBS = -lwiringPi \
        -fsanitize=address \
        -static-libasan
 INCLUDES = 
-SRCS = nand.c main.c
+SRCS = nand-core.c nand-write.c nand-read.c nand-erase.c nand-utils.c main.c
 TARGET = a.out
 
 

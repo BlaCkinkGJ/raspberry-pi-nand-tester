@@ -1,4 +1,5 @@
 #include "nand.h"
+#include "nand-utils.h"
 #include <stdio.h>
 
 int erase_write_test(int block, int page)

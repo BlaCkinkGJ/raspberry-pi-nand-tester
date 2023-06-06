@@ -1,6 +1,9 @@
 #ifndef NAND_H
 #define NAND_H
 
+#include <wiringPi.h>
+#include <time.h>
+
 #define NAND_CLE (21)
 #define NAME_ALE (22)
 #define NAND_R_B (23)
@@ -15,16 +18,10 @@
 
 // #define NAND_ENABLE_RESET
 
-int nand_init();
-int nand_read();
-int nand_write();
+int nand_init(void);
+int nand_read(char *data, int block, int page);
+int nand_write(char *data, int block, int page);
 int nand_erase(int block);
-void nand_free();
-
-void nand_status();
-
-void nand_pins_print();
-int nand_info_print();
-void nand_page_print(char *data);
+void nand_free(void);
 
 #endif
