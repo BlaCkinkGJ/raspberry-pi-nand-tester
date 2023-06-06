@@ -32,5 +32,5 @@ check:
 	cppcheck *.[ch]
 
 clean:
-	rm -rf $(SRCS)
+	rm -rf *.o
 	rm -rf $(TARGET)
