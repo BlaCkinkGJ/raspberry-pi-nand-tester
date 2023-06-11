@@ -13,7 +13,8 @@
 #define NAND_WP (27)
 
 #define NAND_DEFAULT_DELAY_NS (35)
-#define NAND_PAGE_BYTE (2048 + 64)
+#define NAND_PAGE_BYTE (2048)
+#define NAND_PAGE_OOB_BYTE (64)
 #define NAND_PAGES_PER_BLOCK (64)
 
 // #define NAND_ENABLE_RESET

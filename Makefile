@@ -19,7 +19,7 @@ LIBS = -lwiringPi \
        -fsanitize=address \
        -static-libasan
 INCLUDES =
-OBJS = nand-core.o nand-write.o nand-read.o nand-erase.o nand-utils.o main.o
+OBJS = nand-core.o nand-write.o nand-read.o nand-erase.o nand-utils.o nand-crc32.o main.o
 TARGET = a.out
 
 
