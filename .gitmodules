@@ -1,0 +1,3 @@
+[submodule "reedsolomon-c"]
+	path = reedsolomon-c
+	url = git@github.com:jannson/reedsolomon-c.git

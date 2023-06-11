@@ -1,5 +1,6 @@
 #include "nand.h"
 #include "nand-utils.h"
+#include "rs.h"
 
 int nand_write(char *data, int block, int page)
 {
