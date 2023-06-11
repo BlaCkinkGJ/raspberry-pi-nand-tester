@@ -18,8 +18,8 @@ LIBS = -lwiringPi \
        -lasan \
        -fsanitize=address \
        -static-libasan
-INCLUDES = -I./reedsolomon-c
-OBJS = nand-core.o nand-write.o nand-read.o nand-erase.o nand-utils.o main.o rs.o
+INCLUDES =
+OBJS = nand-core.o nand-write.o nand-read.o nand-erase.o nand-utils.o main.o
 TARGET = a.out
 
 
@@ -27,9 +27,6 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LIBS)
-
-rs.o: reedsolomon-c/rs.c
-	$(CC) -O3 $(INCLUDES) -c -o $@ $^ $(LIBS)
 
 main.o: main.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
