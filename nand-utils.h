@@ -9,10 +9,6 @@
 #ifndef NAND_UTILS_H
 #define NAND_UTILS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void nand_delay_ns(int ns);
 
 void nand_write_pin_mode(void);
@@ -46,9 +42,5 @@ int nand_pass_fail(void);
 // nand-oob.c
 int nand_oob_setup(char *oob, char *data);
 int nand_oob_verify(char *oob, char *data);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
