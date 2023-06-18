@@ -1,3 +1,10 @@
+/*
+ * Copyright (C) 2023 Gijun Oh
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
 #include "nand.h"
 #include "nand-utils.h"
 
@@ -21,5 +28,5 @@ int nand_read(char *data, int block, int page)
 	for (i = 0; i < NAND_PAGE_OOB_BYTE; i++) {
 		oob[i] = (char)nand_read_1_cycle();
 	}
-	return 0;
+	return nand_oob_verify(oob, data);
 }

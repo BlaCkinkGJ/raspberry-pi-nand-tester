@@ -20,3 +20,6 @@ Two WiringPi modules are derived from one RaspberyPi 3. Note that Wiring GPIO nu
 
 ![KakaoTalk_20230605_024338060](https://github.com/BlaCkinkGJ/raspberry-pi-nand-tester/assets/16631264/8f43f659-18c5-40d6-bf76-5c305fb3f471)
 
+## LICENSE
+
+* All code files contain licensing information.

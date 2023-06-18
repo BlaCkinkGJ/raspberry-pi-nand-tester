@@ -1,5 +1,17 @@
+/*
+ * Copyright (C) 2023 Gijun Oh
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
 #ifndef NAND_UTILS_H
 #define NAND_UTILS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void nand_delay_ns(int ns);
 
@@ -30,5 +42,13 @@ int nand_info_print(void);
 
 void nand_status(void);
 int nand_pass_fail(void);
+
+// nand-oob.c
+int nand_oob_setup(char *oob, char *data);
+int nand_oob_verify(char *oob, char *data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
