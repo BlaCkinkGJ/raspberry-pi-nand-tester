@@ -12,10 +12,6 @@
 #include <wiringPi.h>
 #include <time.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define NAND_CLE (21)
 #define NAME_ALE (22)
 #define NAND_R_B (23)
@@ -57,9 +53,5 @@ static inline const char *nand_get_read_error_msg(int status_code)
 {
 	return nand_read_errmsg[-status_code];
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

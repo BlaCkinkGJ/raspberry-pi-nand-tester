@@ -13,17 +13,9 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void nand_hamming_compute256x(const uint8_t *data, uint32_t size,
 			      uint8_t *code);
 uint8_t nand_hamming_verify256x(uint8_t *data, uint32_t size,
 				const uint8_t *code);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
