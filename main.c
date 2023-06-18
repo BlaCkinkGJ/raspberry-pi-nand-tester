@@ -1,5 +1,14 @@
+/*
+ * Copyright (C) 2023 Gijun Oh
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
 #include "nand.h"
+#include "nand-utils.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int erase_write_test(int block, int page)
 {
@@ -12,7 +21,7 @@ int erase_write_test(int block, int page)
 	// read
 	ret = nand_read(data, block, page);
 	if (ret) {
-		printf("read fail\n");
+		printf("read fail (err: %s)\n", nand_get_read_error_msg(ret));
 		return ret;
 	}
 	nand_page_print(data);
@@ -26,15 +35,16 @@ int erase_write_test(int block, int page)
 	}
 	ret = nand_read(data, block, page);
 	if (ret) {
-		printf("read fail\n");
+		printf("read fail (err: %s)\n", nand_get_read_error_msg(ret));
 		return ret;
 	}
 	nand_page_print(data);
 	nand_status();
 
 	// write
+	srand((unsigned int)time(NULL));
 	for (i = 0; i < NAND_PAGE_BYTE; i++) {
-		data[i] = (char)((i + page) % (1 << 8));
+		data[i] = (char)rand();
 	}
 	ret = nand_write(data, block, page);
 	if (ret) {

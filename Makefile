@@ -15,18 +15,35 @@ CFLAGS = -Wall \
          -Werror \
          -O3
 LIBS = -lwiringPi \
-       -lasan \
-       -fsanitize=address \
-       -static-libasan
-INCLUDES = 
-SRCS = nand.c main.c
+       -lasan
+INCLUDES =
+OBJS = nand-core.o \
+       nand-write.o \
+       nand-read.o \
+       nand-erase.o \
+       nand-utils.o \
+       nand-oob.o \
+       nand-hamming256.o \
+       main.o
 TARGET = a.out
 
+USE_DEBUG = 0
+ifeq ($(USE_DEBUG), 1)
+CFLAGS += -g -pg
+LIBS += -fsanitize=address \
+        -static-libasan
+endif
 
 all: $(TARGET)
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS)
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(LIBS)
+
+main.o: main.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
+
+nand-%.o: nand-%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 check:
 	cppcheck *.[ch]
