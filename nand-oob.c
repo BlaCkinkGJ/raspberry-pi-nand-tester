@@ -61,7 +61,9 @@ static int nand_oob_is_valid_ecc(char *oob, char *data)
 int nand_oob_verify(char *oob, char *data)
 {
 	int status_code;
+#ifdef DEBUG
 	nand_oob_print(oob);
+#endif
 	if (!nand_oob_is_valid_block(oob)) {
 		return -NAND_OOB_INVALID_BLOCK;
 	}
