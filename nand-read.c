@@ -12,7 +12,7 @@ int nand_read(char *data, int block, int page)
 {
 	int i = 0;
 	int row, col;
-	char oob[64];
+	char oob[64] = { 0xff };
 	if (data == NULL) {
 		return -1;
 	}
