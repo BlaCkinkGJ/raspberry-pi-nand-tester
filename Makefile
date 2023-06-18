@@ -14,8 +14,7 @@ CFLAGS = -Wall \
          -Wconversion \
          -Werror \
          -O3
-LIBS = -lwiringPi \
-       -lasan
+LIBS = -lwiringPi
 INCLUDES =
 OBJS = nand-core.o \
        nand-write.o \
@@ -30,7 +29,8 @@ TARGET = a.out
 USE_DEBUG = 0
 ifeq ($(USE_DEBUG), 1)
 CFLAGS += -g -pg
-LIBS += -fsanitize=address \
+LIBS += -lasan \
+        -fsanitize=address \
         -static-libasan
 endif
 
