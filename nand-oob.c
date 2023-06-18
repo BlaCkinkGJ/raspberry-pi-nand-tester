@@ -33,6 +33,7 @@ int nand_oob_setup(char *oob, char *data)
 	return 0;
 }
 
+#ifdef DEBUG
 static void nand_oob_print(char *oob)
 {
 	for (int i = 0; i < NAND_PAGE_OOB_BYTE; i++) {
@@ -46,6 +47,7 @@ static void nand_oob_print(char *oob)
 	}
 	printf("\n");
 }
+#endif
 
 static int nand_oob_is_valid_block(char *oob)
 {
