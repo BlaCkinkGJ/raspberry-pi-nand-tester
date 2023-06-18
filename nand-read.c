@@ -5,6 +5,7 @@ int nand_read(char *data, int block, int page)
 {
 	int i = 0;
 	int row, col;
+	char oob[64];
 	if (data == NULL) {
 		return -1;
 	}
@@ -16,6 +17,9 @@ int nand_read(char *data, int block, int page)
 	nand_wait_busy();
 	for (i = 0; i < NAND_PAGE_BYTE; i++) {
 		data[i] = (char)nand_read_1_cycle();
+	}
+	for (i = 0; i < NAND_PAGE_OOB_BYTE; i++) {
+		oob[i] = (char)nand_read_1_cycle();
 	}
 	return 0;
 }

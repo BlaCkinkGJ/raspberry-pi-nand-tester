@@ -18,15 +18,21 @@ LIBS = -lwiringPi \
        -lasan \
        -fsanitize=address \
        -static-libasan
-INCLUDES = 
-SRCS = nand-core.c nand-write.c nand-read.c nand-erase.c nand-utils.c main.c
+INCLUDES =
+OBJS = nand-core.o nand-write.o nand-read.o nand-erase.o nand-utils.o nand-crc32.o main.o
 TARGET = a.out
 
 
 all: $(TARGET)
 
-$(TARGET): $(SRCS)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS)
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(LIBS)
+
+main.o: main.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
+
+nand-%.o: nand-%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 check:
 	cppcheck *.[ch]
