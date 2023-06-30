@@ -20,6 +20,22 @@ Two WiringPi modules are derived from one RaspberyPi 3. Note that Wiring GPIO nu
 
 ![KakaoTalk_20230605_024338060](https://github.com/BlaCkinkGJ/raspberry-pi-nand-tester/assets/16631264/8f43f659-18c5-40d6-bf76-5c305fb3f471)
 
+## Install Library
+
+This library supports creating the form of a library by using the following command.
+
+```bash
+sudo make clean
+sudo make install
+```
+
+If you want to create the debuggable library, please you the `USE_DEBUG` flag as follows:
+
+```bash
+sudo make clean
+sudo make USE_DEBUG=1 install
+```
+
 ## LICENSE
 
 * All code files contain licensing information.

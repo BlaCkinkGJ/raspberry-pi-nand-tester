@@ -29,7 +29,7 @@ LIBRARY_TARGET = libnand.a
 
 USE_DEBUG = 0
 ifeq ($(USE_DEBUG), 1)
-CFLAGS += -g -pg
+CFLAGS += -g -pg -DDEBUG
 LIBS += -lasan \
         -fsanitize=address \
         -static-libasan
@@ -64,4 +64,4 @@ check:
 
 clean:
 	rm -rf *.o
-	rm -rf $(TARGET)
+	rm -rf $(TARGET) $(LIBRARY_TARGET)

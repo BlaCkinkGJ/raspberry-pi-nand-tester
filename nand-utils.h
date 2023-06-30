@@ -9,6 +9,10 @@
 #ifndef NAND_UTILS_H
 #define NAND_UTILS_H
 
+#ifdef DEBUG
+#pragma message "debug mode is enabled"
+#endif
+
 void nand_delay_ns(int ns);
 
 void nand_write_pin_mode(void);
