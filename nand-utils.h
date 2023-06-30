@@ -9,6 +9,10 @@
 #ifndef NAND_UTILS_H
 #define NAND_UTILS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef DEBUG
 #pragma message "debug mode is enabled"
 #endif
@@ -47,4 +51,7 @@ int nand_pass_fail(void);
 int nand_oob_setup(char *oob, char *data);
 int nand_oob_verify(char *oob, char *data);
 
+#ifdef __cplusplus
+}
+#endif
 #endif
