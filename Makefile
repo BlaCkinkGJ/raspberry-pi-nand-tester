@@ -25,6 +25,7 @@ OBJS = nand-core.o \
        nand-hamming256.o \
        main.o
 TARGET = a.out
+LIBRARY_TARGET = libnand.a
 
 USE_DEBUG = 0
 ifeq ($(USE_DEBUG), 1)
@@ -34,10 +35,23 @@ LIBS += -lasan \
         -static-libasan
 endif
 
+ifeq ($(PREFIX),)
+PREFIX := /usr/local
+endif
+
 all: $(TARGET)
+
+install: $(LIBRARY_TARGET)
+	install -d $(DESTDIR)$(PREFIX)/lib/
+	install -m 644 $(LIBRARY_TARGET) $(DESTDIR)$(PREFIX)/lib
+	install -d $(DESTDIR)$(PREFIX)/include/ftl
+	install -m 644 *.h $(DESTDIR)$(PREFIX)/include/ftl
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LIBS)
+
+$(LIBRARY_TARGET): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $^
 
 main.o: main.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $^
