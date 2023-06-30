@@ -44,8 +44,8 @@ all: $(TARGET)
 install: $(LIBRARY_TARGET)
 	install -d $(DESTDIR)$(PREFIX)/lib/
 	install -m 644 $(LIBRARY_TARGET) $(DESTDIR)$(PREFIX)/lib
-	install -d $(DESTDIR)$(PREFIX)/include/ftl
-	install -m 644 *.h $(DESTDIR)$(PREFIX)/include/ftl
+	install -d $(DESTDIR)$(PREFIX)/include/nand
+	install -m 644 *.h $(DESTDIR)$(PREFIX)/include/nand
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LIBS)
