@@ -9,6 +9,10 @@
 #ifndef NAND_H
 #define NAND_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <wiringPi.h>
 #include <time.h>
 
@@ -54,4 +58,7 @@ static inline const char *nand_get_read_error_msg(int status_code)
 	return nand_read_errmsg[-status_code];
 }
 
+#ifdef __cplusplus
+}
+#endif
 #endif
