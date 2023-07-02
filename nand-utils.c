@@ -11,10 +11,17 @@
 
 void nand_delay_ns(int ns)
 {
+#ifdef ENABLE_NANOSLEEP
 	struct timespec req, rem;
 	req.tv_sec = 0;
 	req.tv_nsec = ns;
 	nanosleep(&req, &rem);
+#else
+	int i = 1000;
+	(void)ns;
+	while (i--)
+		asm("nop");
+#endif
 }
 
 void nand_write_pin_mode(void)

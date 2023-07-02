@@ -35,6 +35,11 @@ LIBS += -lasan \
         -static-libasan
 endif
 
+USE_NANOSLEEP = 0
+ifeq ($(USE_DEBUG), 1)
+CFLAGS += -DENABLE_NANOSLEEP
+endif
+
 ifeq ($(PREFIX),)
 PREFIX := /usr/local
 endif
